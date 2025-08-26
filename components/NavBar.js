@@ -20,7 +20,6 @@ export default function NavBar() {
     { href: "/terms",   label: t("nav.terms") },
     { href: "/help",    label: t("nav.help") },
     { href: "/contact", label: t("nav.contact") },
-    // ← /auth/reset はここに入れない
   ]), [t]);
 
   const isActive = (href) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
@@ -34,16 +33,18 @@ export default function NavBar() {
           </Link>
         </div>
 
+        {/* ハンバーガー（モバイル） */}
         <button
           className="nav-burger"
           aria-label="Menu"
           aria-expanded={open}
+          aria-controls="global-nav-links"
           onClick={() => setOpen((v) => !v)}
         >
           <span /><span /><span />
         </button>
 
-        <ul className={`nav-links ${open ? "open" : ""}`}>
+        <ul id="global-nav-links" className={`nav-links ${open ? "open" : ""}`}>
           {links.map((l) => (
             <li key={l.href}>
               <Link href={l.href} className={`nav-link ${isActive(l.href) ? "active" : ""}`}>

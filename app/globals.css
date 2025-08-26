@@ -488,3 +488,89 @@ body {
     animation: none;
   }
 }
+
+/* ベースのタイポ（ナビ内） */
+.nav-brand { font-size: 18px; line-height: 1.2; display: inline-flex; align-items: center; gap: 6px; }
+.nav-logo { font-size: 18px; }
+
+/* ハンバーガー（PCは非表示） */
+.nav-burger {
+  display: none;
+  width: 40px; height: 36px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  align-items: center; justify-content: center;
+  background: var(--card);
+  cursor: pointer;
+}
+.nav-burger span {
+  display: block;
+  width: 18px; height: 2px; background: var(--fg);
+  margin: 2px 0;
+  border-radius: 1px;
+}
+
+/* リンクの見た目 */
+.nav-links { display: flex; align-items: center; gap: 12px; }
+.nav-link { display: inline-block; padding: 8px 10px; border-radius: 8px; font-size: 15px; line-height: 1.2; }
+.nav-link.active { font-weight: 700; text-decoration: underline; }
+
+/* -------- スマホ（～640px）でのレイアウト調整 -------- */
+@media (max-width: 640px) {
+  .nav { gap: 8px; }
+  .nav-brand { font-size: 17px; }
+  .nav-burger { display: inline-flex; }
+
+  /* デフォルトは非表示。開いたら縦に展開して幅100% */
+  .nav-links { display: none; }
+  .nav-links.open {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    margin-top: 8px;
+    gap: 8px;
+  }
+  .nav-link { font-size: 16px; padding: 12px 12px; }
+
+  /* コンテナの左右余白も少し詰める */
+  .container { padding: 12px; }
+}
+
+/* -------- フォーム（未ログイン時含む）の入力/ボタンを適正化 -------- */
+/* 既存の reset で border: none にしているため、最低限のスタイルを復帰 */
+input[type="email"],
+input[type="password"],
+input[type="text"],
+input[type="search"] {
+  font-size: 16px;                 /* iOS の自動ズーム防止 */
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+  width: 100%;
+  line-height: 1.35;
+}
+
+/* 汎用ボタン（classなしの <button> にも適用） */
+button {
+  font-size: 16px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--card);
+  cursor: pointer;
+  line-height: 1.2;
+}
+button:hover { background: var(--chip-bg); }
+
+/* 認証フォームの縦長問題を緩和（ラベルと入力の間隔など） */
+form .field, form .form-row {
+  display: flex; flex-direction: column; gap: 8px;
+  margin-bottom: 12px;
+}
+
+/* スマホではボタンを横幅100%にして押しやすく */
+@media (max-width: 640px) {
+  form button { width: 100%; }
+}
