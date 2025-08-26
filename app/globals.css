@@ -574,3 +574,79 @@ form .field, form .form-row {
 @media (max-width: 640px) {
   form button { width: 100%; }
 }
+
+/* ヘッダー内フォーム行（既存 className="toolbar" を活用） */
+.header .toolbar {
+  gap: 8px;
+  flex-wrap: wrap;                /* 幅が狭いときは折り返す */
+}
+
+/* 入力欄：最小幅・行高・枠線を明示して“極小/縦長”防止 */
+.header .toolbar .input,
+.header .toolbar input[type="email"],
+.header .toolbar input[type="password"] {
+  font-size: 16px;                /* iOS の拡大防止＆タップしやすさ */
+  line-height: 1.35;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+  min-width: 180px;               /* 極端に細くならない */
+  flex: 1 1 200px;                /* 余白に応じて伸縮 */
+  writing-mode: horizontal-tb;    /* 念のため横書きを強制 */
+  word-break: keep-all;           /* 1文字ずつの折返しを抑制 */
+}
+
+/* ボタン：縦並び化の主因を排除（インライン→フレックス＆改行抑制） */
+.header .toolbar .button,
+.header .toolbar button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 14px;
+  font-size: 16px;
+  line-height: 1.2;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--card);
+  cursor: pointer;
+  white-space: nowrap;            /* ボタン内テキストの縦積み防止 */
+  word-break: keep-all;
+}
+
+/* タブ風切替（既存 .formTabs を強化） */
+.formTabs {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.formTabs .button {
+  border: 0;
+  border-right: 1px solid var(--border);
+  padding: 10px 12px;
+  background: var(--card);
+}
+.formTabs .button:last-child { border-right: 0; }
+.formTabs .button[aria-selected="true"] {
+  background: var(--primary);
+  color: var(--primary-fg);
+}
+
+/* スマホ最適化：幅いっぱいで見やすく、タップしやすく */
+@media (max-width: 640px) {
+  .container { padding: 12px; }          /* すこし詰めて可読域確保 */
+
+  .header .toolbar { justify-content: stretch; }
+  .header .toolbar .input,
+  .header .toolbar .button,
+  .header .toolbar button {
+    width: 100%;                          /* 横幅いっぱいで縦積み */
+  }
+
+  /* タブは横スクロールを避けるため一旦自然幅 */
+  .formTabs { width: 100%; }
+  .formTabs .button { flex: 1 1 auto; }
+}
+
