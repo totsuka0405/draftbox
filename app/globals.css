@@ -1,0 +1,490 @@
+/*globals.css*/
+
+/* ==========================================================================
+   1) Reset（余白・ボックスモデル・フォーム継承の初期化）
+   ========================================================================== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+/* リンク/フォームの継承（UI全体のトーンを揃える） */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+}
+
+/* リストのマーカーをデフォルトで無効化（必要時は個別指定） */
+ul,
+ol {
+  list-style: none;
+}
+
+/* ==========================================================================
+   2) Base（タイポグラフィ、配色方針、読みやすさの既定）
+   ========================================================================== */
+html {
+  /* システムフォント優先（描画速度・可読性） */
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", sans-serif;
+  line-height: 1.5;
+  /* UA にライト/ダークの意図を伝える（フォーム等のネイティブUI配色が揃う） */
+  color-scheme: light dark;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  /* 長文での視認性をわずかに改善（任意） */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* キーボード操作時にフォーカスリングを視認しやすく（サイト全体で統一） */
+:focus-visible {
+  outline: 2px solid var(--focus-ring, var(--primary));
+  outline-offset: 2px;
+}
+
+/* 視覚的に非表示だがスクリーンリーダでは読み上げる（アクセシビリティ用） */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* 省モーション環境ではアニメーション/トランジションを抑制（全体適用） */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ==========================================================================
+   3) Design Tokens（CSS変数）
+   - 色/サーフェス/余白/角丸/影を用途別に整理
+   ========================================================================== */
+:root {
+  /* ---- Colors（前景/背景/状態） ---- */
+  --bg: #f9fafb;         /* ページ背景 */
+  --fg: #111827;         /* 基本文字色 */
+  --muted: #6b7280;      /* 説明/補助テキスト */
+
+  --primary: #2563eb;    /* 主要アクション/リンク強調 */
+  --primary-fg: #ffffff; /* 主要アクション上の文字色 */
+  --danger: #dc2626;     /* エラー/警告系 */
+
+  /* ---- Surfaces（カード等の面/線） ---- */
+  --card: #ffffff;       /* カードの面 */
+  --border: #d1d5db;     /* 罫線/枠線 */
+  --chip-bg: #e5e7eb;    /* チップ等の軽い塗り */
+  --chip-fg: #374151;    /* チップ上の文字色 */
+
+  /* ---- Toast（通知） ---- */
+  --toast-bg: #111827;
+  --toast-fg: #f9fafb;
+
+  /* ---- Radius（角丸） ---- */
+  --radius: 8px;
+  --radius-sm: 4px;
+
+  /* ---- Spacing（余白スケール：4の倍数をベース） ---- */
+  --space-1: 4px;
+  --space-2: 6px;
+  --space-3: 8px;
+  --space-4: 12px;
+  --space-5: 16px;
+
+  /* ---- Shadows（影） ---- */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+/* ダークモード：OS設定に追従（既存配色を尊重） */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f172a;
+    --fg: #f1f5f9;
+    --muted: #94a3b8;
+
+    --card: #1e293b;
+    --border: #334155;
+
+    --chip-bg: #334155;
+    --chip-fg: #f1f5f9;
+
+    --toast-bg: #f1f5f9;
+    --toast-fg: #0f172a;
+  }
+}
+
+/* 高コントラスト環境：境界/リングを強化（見失い防止） */
+@media (prefers-contrast: more) {
+  :root {
+    --border: #6b7280;
+    --focus-ring: #000;
+  }
+}
+
+/* ==========================================================================
+   4) Utilities（レイアウト補助/共通ユーティリティ）
+   ========================================================================== */
+/* コンテンツ幅の中央寄せコンテナ */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-5);
+}
+
+/* ラベル＋フォームを横並びにする簡易ユーティリティ */
+.field-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* 数値入力等の幅を揃える */
+.input-narrow {
+  width: 120px;
+  min-width: 120px;
+}
+
+/* 1行での省略（カードタイトル等） */
+.clamp-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* 区切り線（ツールバー等） */
+.divider {
+  width: 1px;
+  height: 20px;
+  background: var(--border);
+}
+
+/* メタ情報の控えめ表示 */
+.metaChip {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+/* ==========================================================================
+   5) Page Structure（ページ上の主要レイアウト）
+   ========================================================================== */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-5);
+}
+
+.brand {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.kicker {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 280px 1fr; /* サイドバー + メイン */
+  gap: var(--space-5);
+}
+
+@media (max-width: 768px) {
+  .layout {
+    grid-template-columns: 1fr; /* モバイルでは1カラム */
+  }
+}
+
+/* ==========================================================================
+   6) Components：Card / Section
+   - 情報ブロックの基本単位
+   ========================================================================== */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-4);
+  box-shadow: var(--shadow-sm);
+}
+
+.card.soft {
+  background: transparent;
+  border: 1px dashed var(--border);
+  box-shadow: none;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+/* ==========================================================================
+   7) Components：Form Controls
+   - 入力とボタンの一貫した見た目/挙動
+   ========================================================================== */
+.input {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-3);
+  background: var(--bg);
+}
+
+.input:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+}
+
+.input[disabled],
+.button[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ボタン：デフォルトは面+枠、ホバー/アクティブ/バリアントを統一 */
+.button {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-4);
+  background: var(--card);
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.06s ease;
+}
+
+.button:hover {
+  background: var(--chip-bg);
+}
+.button:active {
+  transform: translateY(1px);
+}
+
+/* バリアント */
+.button.primary {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--primary-fg);
+}
+
+.button.danger {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: #fff;
+}
+
+.button.ghost {
+  background: transparent;
+}
+
+/* タブ（ボタン流用）：選択状態を視覚的に示す */
+.formTabs {
+  display: flex;
+}
+.formTabs .button[aria-selected="true"] {
+  background: var(--primary);
+  color: var(--primary-fg);
+}
+
+/* セグメントコントロール（トグルボタン群） */
+.seg {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.seg-btn {
+  padding: 4px 8px;
+  background: var(--card);
+  cursor: pointer;
+}
+
+.seg-btn:hover {
+  background: var(--chip-bg);
+}
+.seg-btn.active {
+  background: var(--primary);
+  color: var(--primary-fg);
+}
+
+/* ==========================================================================
+   8) Components：Navigation
+   ========================================================================== */
+.nav-wrap {
+  border-bottom: 1px solid var(--border);
+  margin-bottom: var(--space-5);
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-brand {
+  font-weight: 700;
+}
+
+.nav-links {
+  display: flex;
+  gap: 12px;
+}
+
+.nav-link.active {
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+   9) Components：List
+   ========================================================================== */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.item {
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.item:hover {
+  background: var(--chip-bg);
+}
+
+.item.active {
+  background: var(--primary);
+  color: var(--primary-fg);
+}
+
+/* ==========================================================================
+   10) Components：Toolbar / Counter / Badge
+   ========================================================================== */
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.counterBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-3);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: var(--chip-bg);
+  color: var(--chip-fg);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   11) Components：Status Chips
+   ========================================================================== */
+.statusChip {
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+}
+
+.statusChip.saving {
+  background: var(--chip-bg);
+}
+
+.statusChip.saved {
+  background: #16a34a;
+  color: #fff;
+}
+
+.statusChip.error {
+  background: var(--danger);
+  color: #fff;
+}
+
+/* ==========================================================================
+   12) Components：Toast（通知）
+   - 自動でフェードイン→滞留→フェードアウト
+   - 省モーション環境ではアニメーションを停止
+   ========================================================================== */
+.toast {
+  position: fixed;
+  bottom: var(--space-5);
+  right: var(--space-5);
+  background: var(--toast-bg);
+  color: var(--toast-fg);
+  padding: var(--space-3) var(--space-4);
+  border-radius: 6px;
+  box-shadow: var(--shadow-md);
+  animation: fadeInOut 2.6s ease;
+  z-index: 9999; /* 通常UIの上に重ねる */
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  10%,
+  90% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast {
+    animation: none;
+  }
+}
